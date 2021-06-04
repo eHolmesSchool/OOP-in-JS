@@ -13,14 +13,14 @@ let destructionCounter = document.getElementById("destroyedDisplay");
 // Event Listeners
 document.addEventListener('keydown', downInator);
 document.addEventListener('keyup', upInator);
-document.getElementById("canvas").addEventListener("click", doThingClick);
+document.getElementById("canvas").addEventListener("mousedown", doThingClick);
 
 // Variables //
 let keysPressed = [];
 
 let block;
 let blockColor = "red";
-let blockSize = 90;
+let blockSize = 50;
 let blockHealth = 100000;
 let blockSpeed = 0.3;
 let blockArray = [];
@@ -29,16 +29,16 @@ let mana = 100;
 let manaCostDefault = 2;
 let manaColor = "skyblue";
 let manaCap = 200;
-let manaRegen = 2;
+let manaRegen = document.getElementById("regen");
 let manaOverload = false;
 let manaBar;
 
 let bubble;
 let bubbleColor = "pink";
 let bubbleSpeedx;
-let bubbleWackyness = 2;
+let bubbleWackyness = document.getElementById("wackyness");
 let bubbleSpeedy = 3;
-let bubbleSize = 10;
+let bubbleSize = 8;
 let bubbleDamage = 1;
 let manaCost = manaCostDefault;
 let bubbleArray = [];
@@ -46,14 +46,14 @@ let bubbleArray = [];
 let collisions = 0;
 let destructions = 0;
 
-let homingSpeed = 0.3;
+let homingSpeed = document.getElementById("homingSp");
 
 let explosion;
 let explosionColor = 'orange'
-let expansionCap = 20;
+let expansionCap = 30;
 let explosionDamage = 20;
-let expansionVelocity = blockSpeed * 1.2;
-let explosionSize = 10;
+let explosionSize = 1;
+let expansionVelocity = blockSpeed * 6;
 let explosionArray = [];
 
 //Assigned via downInator
@@ -102,34 +102,36 @@ function upInator(event) {
     }
 }
 
+
 function doThingClick(event) {
+
     bubbleSpeedx = (Math.random() * (bubbleWackyness + blockSpeed)) - (Math.random() * (bubbleWackyness + blockSpeed));
     bubbleColor = "white"
     if (bouncy == true && explosive == true && homing == false) {
         bubbleColor = "purple";
-        manaCost = 20
+        manaCost = 45
     } else {
         if (bouncy == true) {
             bubbleColor = "blue"
             manaCost = 15
             if (homing == true) {
                 bubbleColor = "green";
-                manaCost = 20
+                manaCost = 30
                 if (explosive == true) {
                     bubbleColor = "black";
-                    manaCost = 70
+                    manaCost = 65
                 }
             }
         } else if (homing == true) {
             bubbleColor = "yellow";
-            manaCost = 5
+            manaCost = 10
             if (explosive == true) {
                 bubbleColor = "orange";
-                manaCost = 15
+                manaCost = 40
             }
         } else if (explosive == true) {
             bubbleColor = "red";
-            manaCost = 25
+            manaCost = 30
         }
     }
     if (keysPressed['ShiftLeft']) {
@@ -147,7 +149,9 @@ function doThingClick(event) {
         }
 
     }
+
 }
+
 
 function manaOverloadReset() {
     manaOverload = false;
@@ -163,14 +167,16 @@ function bubbleMaker(event, speedx) {
 }
 
 updateGlobal();
+
 function updateGlobal() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Clear first
     bubbleFunction();
     blockDestroyedCheck();
     counterUpdate();
     manaBarUpdate();
+    explosionUpdate();
     requestAnimationFrame(updateGlobal);
-  
+
 }
 
 function bubbleFunction() {
@@ -210,7 +216,7 @@ function manaBarUpdate() {
             mana += manaRegen;
         }
     }
-    manaBar = new Block(manaColor, canvas.width - 50, canvas.height, 50, -(mana * 5), mana, 0);
+    manaBar = new Block(manaColor, canvas.width - 50, canvas.height, 50, -(mana * 3.5), mana, 0);
     manaBar.update();
     manaCost = manaCostDefault;
 }
@@ -274,21 +280,25 @@ function homingCheck(a, i) {
     }
 }
 
-function explosionMaker(x,y){
-    explosion = new Explosion(explosionColor,x,y, expansionVelocity, explosionDamage);
+function explosionMaker(x, y) {
+    explosion = new Explosion(explosionColor, x, y, expansionVelocity, explosionDamage);
 
     explosionArray.splice(explosionArray.length, 0, explosion);
 }
+
 function explosiveCheck(a) {
-    if (bubbleArray[a].explosive == true){
-        explosionMaker(bubbleArray[a].x,bubbleArray[a].y)
+    if (bubbleArray[a].explosive == true) {
+        explosionMaker(bubbleArray[a].x, bubbleArray[a].y)
     }
-    for (let e = 0; e < explosionArray.length; e++){
-        if (explosionArray[e].cycles < expansionCap){
-            explosionArray[e].update;
-            explosionArray[e].cycles ++;
+}
+
+function explosionUpdate(a) {
+    for (let e = 0; e < explosionArray.length; e++) {
+        if (explosionArray[e].cycles < expansionCap) {
+            explosionArray[e].update();
+            explosionArray[e].cycles++;
         } else {
-            explosionArray.splice(e,1)
+            explosionArray.splice(e, 1)
         }
     }
 }
