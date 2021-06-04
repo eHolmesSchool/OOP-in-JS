@@ -8,7 +8,21 @@
 </head>
 <body>
     <h1>You've collided bubbles <object id="collisionDisplay">0</object> times and broken <object id="destroyedDisplay">0</object> targets</h1>
-    <canvas id="canvas" width="1200" height="1000" style="border:1px solid #000000;"></canvas>
+
+
+
+    <canvas id="canvas" width="1000" height="700" style="border:1px solid #000000;"></canvas>
+    <br> 
+
+    <label for="wackyness">Wackyness:</label>
+    <input type="number" id="wackyness" name="wackyness" value ="1">
+    <label for="homingSp">Homing Speed:</label>
+    <input type="number" id="homingSp" name="homingSp" value ="0.25">
+    <label for="regen">Regen:</label>
+    <input type="number" id="regen" name="regen" value ="0.5">
+    <input type="submit">
+
+
     <script src="draw.js"></script>
     <script src="script.js"></script>
 </body>
