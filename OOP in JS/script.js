@@ -13,6 +13,7 @@ let destructionCounter = document.getElementById("destroyedDisplay");
 // Event Listeners
 document.addEventListener('keydown', downInator);
 document.addEventListener('keyup', upInator);
+document.getElementById("submit").addEventListener("click", newInputs);
 document.getElementById("canvas").addEventListener("mousedown", doThingClick);
 
 // Variables //
@@ -20,23 +21,23 @@ let keysPressed = [];
 
 let block;
 let blockColor = "red";
-let blockSize = 50;
-let blockHealth = 100000;
-let blockSpeed = 0.3;
+let blockSize = Number((document.getElementById("bSize").value));
+let blockHealth = Number((document.getElementById("bHealth").value));
+let blockSpeed = Number((document.getElementById("bSpeed").value))/100;
 let blockArray = [];
 
-let mana = 100;
+let mana = 12;
 let manaCostDefault = 2;
 let manaColor = "skyblue";
-let manaCap = 200;
-let manaRegen = document.getElementById("regen");
+let manaCap = 100;
+let manaRegen = Number((document.getElementById("regen").value))/100;
 let manaOverload = false;
 let manaBar;
 
 let bubble;
 let bubbleColor = "pink";
 let bubbleSpeedx;
-let bubbleWackyness = document.getElementById("wackyness");
+let bubbleWackyness = Number((document.getElementById("wackyness").value))/100;
 let bubbleSpeedy = 3;
 let bubbleSize = 8;
 let bubbleDamage = 1;
@@ -46,25 +47,31 @@ let bubbleArray = [];
 let collisions = 0;
 let destructions = 0;
 
-let homingSpeed = document.getElementById("homingSp");
+let homingSpeed = Number((document.getElementById("homingSp").value))/100;
 
 let explosion;
-let explosionColor = 'orange'
-let expansionCap = 30;
+let explosionColor = 'darkorange'
+let expansionCap = 40;
 let explosionDamage = 20;
-let explosionSize = 1;
-let expansionVelocity = blockSpeed * 6;
+let expansionVelocity = 1.3 ;
 let explosionArray = [];
 
 //Assigned via downInator
 let bouncy = false;
 let homing = false;
 let explosive = false;
-let digit4 = false;
 // Debugger Variables
 let bubbleCount = 0;
 
 // Functions //
+function newInputs(){
+    blockSize = Number((document.getElementById("bSize").value));
+    blockHealth = Number((document.getElementById("bHealth").value));
+    blockSpeed = Number((document.getElementById("bSpeed").value))/100;;
+    manaRegen = Number((document.getElementById("regen").value))/100;
+    bubbleWackyness = Number((document.getElementById("wackyness").value))/100;
+    homingSpeed = Number((document.getElementById("homingSp").value))/100;
+}
 function downInator(event) {
     //  creates an object "event" within keysPressed array that has the name of the key pressed and gives it the value "true" effectivly defining it. Without the added "true" bit it would just blink out of existence.
     keysPressed[event.code] = true;
@@ -77,9 +84,6 @@ function downInator(event) {
     }
     if (event.code == 'Digit3') {
         explosive = true;
-    }
-    if (event.code == 'Digit4') {
-        digit4 = true;
     }
     //(keysPressed['Control'] && event.key == 'a')
 }
@@ -97,15 +101,13 @@ function upInator(event) {
     if (event.code == 'Digit3') {
         explosive = false;
     }
-    if (event.code == 'Digit4') {
-        digit4 = false;
-    }
+
 }
 
 
 function doThingClick(event) {
 
-    bubbleSpeedx = (Math.random() * (bubbleWackyness + blockSpeed)) - (Math.random() * (bubbleWackyness + blockSpeed));
+    bubbleSpeedx = (Math.random() * (bubbleWackyness)) - (Math.random() * (bubbleWackyness));
     bubbleColor = "white"
     if (bouncy == true && explosive == true && homing == false) {
         bubbleColor = "purple";
@@ -151,7 +153,6 @@ function doThingClick(event) {
     }
 
 }
-
 
 function manaOverloadReset() {
     manaOverload = false;
@@ -253,7 +254,6 @@ function collisionCheck(a, i) {
 }
 
 
-
 function bouncyCheck(a, i) {
     if (bubbleArray[a].bouncy == true) {
         if ((bubbleArray[a].y - bubbleArray[a].radius) >= (blockArray[i].y + blockArray[i].height - bubbleArray[a].speedy) ||
@@ -292,13 +292,19 @@ function explosiveCheck(a) {
     }
 }
 
-function explosionUpdate(a) {
+function explosionUpdate() {
     for (let e = 0; e < explosionArray.length; e++) {
         if (explosionArray[e].cycles < expansionCap) {
             explosionArray[e].update();
             explosionArray[e].cycles++;
         } else {
+            for (let i = 0; i < blockArray.length; i++) {
+                if (explosionArray[e].collisionCheck(blockArray[i].x, blockArray[i].y, blockArray[i].width, blockArray[i].height) == true) {
+                    blockArray[i].numb -= explosionArray[e].damage;
+                }
+            }            
             explosionArray.splice(e, 1)
         }
     }
 }
+
