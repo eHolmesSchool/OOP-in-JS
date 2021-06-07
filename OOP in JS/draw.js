@@ -38,7 +38,7 @@ class Projectile {
     }
 
     offScreenCheck() {
-        if ((this.y + this.radius) <= 0 || this.y - this.radius >= canvas.height || this.x + this.radius <= 0 || this.x - this.radius >= canvas.width) {
+        if ((this.y + this.radius) <= 0 || this.y - this.radius >= canvas.height || this.x + this.radius <= 0 || this.x - this.radius >= canvas.width-50) {
             return true;
         } else {
             return false;
@@ -116,7 +116,7 @@ class Block {
                 this.directionSelector = 1;
             }
         } else {
-            if ((this.x + this.width) >= canvas.width) {
+            if ((this.x + this.width) >= canvas.width-50) {
                 //If right edge is off screen, make it go left
                 this.directionSelector = 0;
             }
@@ -148,13 +148,14 @@ class Explosion {
     }
 
     drawBubble() {
-
+        ctx.globalAlpha = 0.8;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
         ctx.fillStyle = this.color;
         ctx.fill();
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = "orange";
+        ctx.globalAlpha = 1;
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "Red";
         ctx.stroke();
     }
 
